@@ -36,6 +36,16 @@ public class ProductController {
         return "productList";
     }
 
+    @PostMapping("/delete")
+    public String deleteProduct(@RequestParam(value = "productIds", required = false) List<String> productIds) {
+        if (productIds != null) {
+            for (String productId : productIds) {
+                service.deleteProductById(productId);
+            }
+        }
+        return "redirect:list";
+    }
+
     @GetMapping("/edit/{id}")
     public String editProductPage(@PathVariable("id") String id, Model model) {
         Product product = service.findById(id);
