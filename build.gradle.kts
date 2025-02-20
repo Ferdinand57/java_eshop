@@ -3,6 +3,7 @@ plugins {
     jacoco
     id("org.springframework.boot") version "3.1.5" // Downgrade Spring Boot plugin version (Tutorial 2)
     id("io.spring.dependency-management") version "1.1.3" // Downgrade dependency management plugin version (Tutorial 2)
+    id("org.sonarqube") version "4.5.0.3353"
 }
 
 group = "id.ac.ui.cs.advprog"
