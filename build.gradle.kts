@@ -1,56 +1,53 @@
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "3.4.2"
-    id("io.spring.dependency-management") version "1.1.7"
+    id("org.springframework.boot") version "3.1.5" // Downgrade Spring Boot plugin version (Tutorial 2)
+    id("io.spring.dependency-management") version "1.1.3" // Downgrade dependency management plugin version (Tutorial 2)
 }
-
-val seleniumJavaVersion = "4.14.1"
-val seleniumJupiterVersion = "5.0.1"
-val webdrivermanagerVersion = "5.6.3"
-val junitJupiterVersion = "5.9.1"
-
 
 group = "id.ac.ui.cs.advprog"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
+    sourceCompatibility = JavaVersion.VERSION_17 // Use Java 17 to match "Tutorial 2" for better compatibility
 }
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    compileOnly("org.projectlombok:lombok")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
-    testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
-    testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+val seleniumJavaVersion = "4.14.1"
+val webdrivermanagerVersion = "5.6.3"
+val junitJupiterVersion = "5.9.1"
 
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf") // Add thymeleaf back if you need it
+
+    testImplementation(platform("org.junit:junit-bom:$junitJupiterVersion")) // JUnit BOM for version management (Tutorial 2)
+    testImplementation("org.springframework.boot:spring-boot-starter-test") // Spring Boot Test
+    testImplementation("org.junit.jupiter:junit-jupiter-api") // JUnit Jupiter API (no version - BOM managed)
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine") // JUnit Jupiter Engine (no version - BOM managed)
+
+    testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
+    testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
+    testImplementation("io.github.bonigarcia:selenium-jupiter:5.0.1") { // Explicit selenium-jupiter version (Tutorial 2)
+        exclude(group = "org.junit.jupiter") // Exclude JUnit Jupiter from selenium-jupiter (Tutorial 2)
+    }
+
+    compileOnly("org.projectlombok:lombok:1.18.30") // Explicit Lombok version (Tutorial 2)
+    annotationProcessor("org.projectlombok:lombok:1.18.30") // Explicit Lombok version (Tutorial 2)
+    testCompileOnly("org.projectlombok:lombok:1.18.30") // Explicit Lombok version (Tutorial 2)
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.30") // Explicit Lombok version (Tutorial 2)
+
+
+    developmentOnly("org.springframework.boot:spring-boot-devtools") // Keep devtools if needed
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor") // Keep config processor if needed
 }
 
 tasks.register<Test>("unitTest") {
     description = "Runs unit tests."
     group = "verification"
-
     filter {
         excludeTestsMatching("*FunctionalTest")
     }
@@ -59,7 +56,6 @@ tasks.register<Test>("unitTest") {
 tasks.register<Test>("functionalTest") {
     description = "Runs functional tests."
     group = "verification"
-
     filter {
         includeTestsMatching("*FunctionalTest")
     }
