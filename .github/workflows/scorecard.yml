@@ -15,16 +15,20 @@ on:
     branches: [ "main" ]
 
 # Declare default permissions as read only.
-permissions:
-  contents: write  # Top-level permissions: write access for artifacts
-  security-events: write
-  id-token: write
-
+permissions: read-all
 
 jobs:
   analysis:
     name: Scorecard analysis
     runs-on: ubuntu-latest
+    #permissions:  <-- removed the entire block below this line
+      # Needed to upload the results to code-scanning dashboard.
+      #security-events: write
+      # Needed to publish results and get a badge (see publish_results below).
+      #id-token: write
+      # Uncomment the permissions below if installing in a private repository.
+      # contents: read
+      # actions: read
 
     steps:
       - name: "Checkout code"
@@ -57,7 +61,7 @@ jobs:
       - name: "Upload artifact"
         uses: actions/upload-artifact@97a0fba1372883ab732affbe8f94b823f91727db # v3.pre.node20
         with:
-          name: sarif-file
+          name: SARIF file
           path: results.sarif
           retention-days: 5
 
