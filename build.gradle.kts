@@ -3,7 +3,7 @@ plugins {
     jacoco
     id("org.springframework.boot") version "3.1.5" // Downgrade Spring Boot plugin version (Tutorial 2)
     id("io.spring.dependency-management") version "1.1.3" // Downgrade dependency management plugin version (Tutorial 2)
-    id("org.sonarqube") version "4.5.0.3353"
+    id("pmd") // Add PMD plugin
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -75,4 +75,18 @@ tasks.test {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+}
+
+// PMD Configuration "To run ./gradlew clean pmdMain pmdTest"
+pmd {
+    isConsoleOutput = true
+    ruleSets = listOf(
+        "category/java/bestpractices.xml",
+        "category/java/codestyle.xml",
+        "category/java/design.xml",
+        "category/java/errorprone.xml",
+        "category/java/multithreading.xml",
+        "category/java/performance.xml",
+        "category/java/security.xml"
+    )
 }
