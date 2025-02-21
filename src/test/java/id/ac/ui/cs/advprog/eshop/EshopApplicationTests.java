@@ -10,12 +10,6 @@ class EshopApplicationTests {
 
     @Test
     void contextLoads() {
-        // This test already verifies that the context loads, which is good.
-        // We can keep it as a basic sanity check.
-    }
-
-    @Test
-    void testMainMethod() {
         assertDoesNotThrow(() -> EshopApplication.main(new String[] {}));
     }
 }
