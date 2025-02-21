@@ -79,6 +79,7 @@ tasks.jacocoTestReport {
 
 // PMD Configuration "To run ./gradlew clean pmdMain pmdTest"
 pmd {
+    toolVersion = "7.0.0-rc4"
     isConsoleOutput = true
     ruleSets = listOf(
         "category/java/bestpractices.xml",
