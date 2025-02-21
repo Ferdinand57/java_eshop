@@ -3,7 +3,7 @@ name: Deploy to Koyeb
 on:
   push:
     branches:
-      - module-2-exercise
+      - main
 
 jobs:
   deploy:
@@ -17,5 +17,5 @@ jobs:
         with:
           api_token: ${{ secrets.KOYEB_API_TOKEN }}
           app_name: java-eshop
-          git_branch: module-2-exercise
+          git_branch: main
           port: 8080
