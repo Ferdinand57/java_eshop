@@ -1,0 +1,22 @@
+name: Deploy to Koyeb
+
+on:
+  push:
+    branches:
+      - module-2-exercise
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Koyeb
+        uses: koyeb/koyeb-action@v1
+        with:
+          api_token: ${{ secrets.KOYEB_API_TOKEN }}
+          app_name: your-app-name # Replace with your Koyeb app name
+          git_branch: module-2-exercise
+          # Optional: Specify the Dockerfile path if it's not in the root
+          # dockerfile_path: ./Dockerfile
