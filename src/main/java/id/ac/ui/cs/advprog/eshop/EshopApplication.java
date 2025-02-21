@@ -4,12 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public final class EshopApplication {
+public class EshopApplication {
 
-    public static void main(final String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(EshopApplication.class, args);
     }
-    private EshopApplication(){
-        //empty
-    }
+
 }
