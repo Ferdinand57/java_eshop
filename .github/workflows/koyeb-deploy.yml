@@ -18,5 +18,6 @@ jobs:
           api_token: ${{ secrets.KOYEB_API_TOKEN }}
           app_name: your-app-name # Replace with your Koyeb app name
           git_branch: module-2-exercise
+          port: 8080 # Add this line
           # Optional: Specify the Dockerfile path if it's not in the root
           # dockerfile_path: ./Dockerfile
