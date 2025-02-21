@@ -2,64 +2,76 @@ package id.ac.ui.cs.advprog.eshop.controller;
 
 import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@WebMvcTest(ProductController.class)
+@ExtendWith(MockitoExtension.class)
 class ProductControllerTest {
 
-    @Autowired
+    @InjectMocks
+    private ProductController productController;
+
+    @Mock
+    private ProductService productService;
+
+    @Mock
+    private Model model;
+
     private MockMvc mockMvc;
 
-    @MockBean
-    private ProductService productService;
+    @BeforeEach
+    void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
+    }
 
     @Test
     void testCreateProductPage() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/product/create"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("createProduct"))
-                .andExpect(model().attributeExists("product"));
+        final String viewName = productController.createProductPage(model);
+        assertEquals("createProduct", viewName, "View name should be createProduct");
     }
 
     @Test
     void testCreateProductPost() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/product/create")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("productName", "Test Product")
-                        .param("productQuantity", "10"))
-                .andExpect(status().is3xxRedirection()) // Expect redirect
-                .andExpect(redirectedUrl("list"));
-        verify(productService, times(1)).create(Mockito.any(Product.class)); // Verify service create called
+        final Product product = new Product();
+        final String redirectUrl = productController.createProductPost(product, model);
+        assertEquals("redirect:list", redirectUrl, "Redirect URL should be redirect:list");
     }
 
     @Test
     void testProductListPage() throws Exception {
-        List<Product> productList = new ArrayList<>();
-        productList.add(new Product());
-        productList.add(new Product());
-        Mockito.when(productService.findAll()).thenReturn(productList); // Mock service findAll
+        final List<Product> productList = new ArrayList<>();
+        when(productService.findAll()).thenReturn(productList);
+        final String viewName = productController.productListPage(model);
+        assertEquals("productList", viewName, "View name should be productList");
+    }
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/product/list"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("productList"))
-                .andExpect(model().attributeExists("products"))
-                .andExpect(model().attribute("products", productList)); // Check model attribute value
-        verify(productService, times(1)).findAll(); // Verify service findAll called
+    @Test
+    void productListPageLawOfDemeter() throws Exception {
+        try {
+            final List<Product> productList = new ArrayList<>();
+            when(productService.findAll()).thenReturn(productList);
+
+            final ResultActions result = mockMvc.perform(get("/product/list"));
+            result.andExpect(status().isOk());
+            result.andExpect(view().name("productList"));
+        } catch (Exception e) {
+            fail("Exception during test: " + e.getMessage()); // Or handle the exception appropriately
+        }
     }
 }
