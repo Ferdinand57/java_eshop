@@ -14,58 +14,75 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
 
+    @InjectMocks
+    private ProductServiceImpl service;
+
     @Mock
     private ProductRepository productRepository;
 
-    @InjectMocks
-    private ProductServiceImpl productService;
-
-    private Product product;
-
     @BeforeEach
     void setUp() {
-        product = new Product();
-        product.setProductId("test-product");
-        product.setProductName("Test Product");
-        product.setProductQuantity(5);
     }
 
     @Test
     void testCreateProduct() {
-        when(productRepository.create(product)).thenReturn(product); // Mock repository behavior
+        final Product product = new Product();
+        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
 
-        Product createdProduct = productService.create(product);
+        when(productRepository.create(product)).thenReturn(product);
 
-        assertNotNull(createdProduct);
-        assertEquals(product.getProductId(), createdProduct.getProductId());
-        assertEquals(product.getProductName(), createdProduct.getProductName());
-        assertEquals(product.getProductQuantity(), createdProduct.getProductQuantity());
-        verify(productRepository, times(1)).create(product); // Verify repository method was called
+        final Product createdProduct = service.create(product);
+
+        assertNotNull(createdProduct, "Created product should not be null");
+        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", createdProduct.getProductId(), "Product ID should match");
+        assertEquals("Sampo Cap Bambang", createdProduct.getProductName(), "Product Name should match");
+        assertEquals(100, createdProduct.getProductQuantity(), "Product Quantity should match");
     }
 
     @Test
-    void testFindAllProducts() {
-        List<Product> productList = new ArrayList<>();
-        productList.add(product);
-        productList.add(new Product()); // Add another product
+    void testFindAllProductIfEmpty() {
+        when(productRepository.findAll()).thenReturn(new ArrayList<Product>().iterator());
 
-        when(productRepository.findAll()).thenReturn(productList.iterator()); // Mock repository findAll
+        final List<Product> productList = service.findAll();
 
-        List<Product> allProducts = productService.findAll();
+        assertTrue(productList.isEmpty(), "Product list should be empty");
+    }
 
-        assertNotNull(allProducts);
-        assertEquals(productList.size(), allProducts.size());
-        Iterator<Product> expectedIterator = productList.iterator();
-        for (Product actualProduct : allProducts) {
-            assertTrue(expectedIterator.hasNext());
-            Product expectedProduct = expectedIterator.next();
-            assertEquals(expectedProduct, actualProduct); // Check product equality
+    @Test
+    void testFindAllProduct() {
+        final List<Product> productData = new ArrayList<>();
+        final Product product1 = new Product();
+        product1.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product1.setProductName("Sampo Cap Bambang");
+        product1.setProductQuantity(100);
+        productData.add(product1);
+
+        final Product product2 = new Product();
+        product2.setProductId("a0f9de46-90b1-437d-a0bf-d0821dde9096");
+        product2.setProductName("Sampo Cap Usep");
+        product2.setProductQuantity(50);
+        productData.add(product2);
+
+        when(productRepository.findAll()).thenReturn(productData.iterator());
+
+        final List<Product> allProducts = service.findAll();
+
+        assertFalse(allProducts.isEmpty(), "Product list should not be empty");
+        assertEquals(2, allProducts.size(), "Product list should have two products");
+
+        final Iterator<Product> expectedIterator = productData.iterator();
+        for (final Product actualProduct : allProducts) {
+            final Product expectedProduct = expectedIterator.next();
+            assertEquals(expectedProduct.getProductId(), actualProduct.getProductId(), "Product ID should match");
+            assertEquals(expectedProduct.getProductName(), actualProduct.getProductName(), "Product Name should match");
+            assertEquals(expectedProduct.getProductQuantity(), actualProduct.getProductQuantity(), "Product Quantity should match");
         }
-        verify(productRepository, times(1)).findAll(); // Verify repository method was called
     }
 }
