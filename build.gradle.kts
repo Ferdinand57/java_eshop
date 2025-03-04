@@ -12,25 +12,6 @@ version = "0.0.1-SNAPSHOT"
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
-
-    sourceSets {
-        main {
-            java {
-                srcDirs("src/main/java")
-            }
-            resources {
-                srcDirs("src/main/resources")
-            }
-        }
-        test {
-            java {
-                srcDirs("src/test/java")
-            }
-            resources {
-                srcDirs("src/test/resources")
-            }
-        }
-    }
 }
 
 repositories {
