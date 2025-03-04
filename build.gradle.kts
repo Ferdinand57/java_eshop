@@ -1,8 +1,8 @@
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "3.1.5" // Downgrade Spring Boot plugin version (Tutorial 2)
-    id("io.spring.dependency-management") version "1.1.3" // Downgrade dependency management plugin version (Tutorial 2)
+    id("org.springframework.boot") version "3.2.1" // Updated Spring Boot plugin version
+    id("io.spring.dependency-management") version "1.1.4" //  Matching dependency management version for 3.2.1
     id("pmd") // Add PMD plugin
 }
 
@@ -10,7 +10,8 @@ group = "id.ac.ui.cs.advprog"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17 // Use Java 17 to match "Tutorial 2" for better compatibility
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
