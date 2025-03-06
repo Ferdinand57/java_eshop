@@ -52,3 +52,75 @@ I think the current implementation is a good start for CI/CD, but it's not fully
 
 
 - Testing Would Be a Nightmare, how do you test a class that does everything? you don't
+
+## Module 4 Reflection
+
+### 1. Reflect based on Percival (2017) proposed self-reflective questions (in “Principles and Best Practice of Testing” submodule, chapter “Evaluating Your Testing Objectives”), whether this TDD flow is useful enough for you or not. If not, explain things that you need to do next time you make more tests.
+
+#### Evaluate Your Tests: Correctness
+
+- Do I have enough functional tests to reassure myself that my application really works, from the point of view of the user?
+
+Not really, the test I implemented are enough to cover the basic function of my code, but it doesn't cover all of it. The test I have implemented is enough to reassure me that the code will work properly, but not enough to reassure me it will do that in every condition.
+
+- Am I testing all the edge cases thoroughly?
+
+No, as I have said before, the test I have implemented is enough for the basic mechanic of the program, but I'm sure there's many edge cases that I don't know about
+
+- Do I have tests that check whether all my components fit together properly? Could some integrated tests do this, or are functional tests enough?
+
+No, I currently don't have test that integrate with the program. Currently with mockito, my test only mock the verification. Currently, I don't know if functional tests are enough.
+
+#### Evaluate Your Tests: Maintainability
+
+- Are my tests giving me the confidence to refactor my code, fearlessly and frequently?
+
+Currently, my tests are giving me some confidence to refactor my code, but that's probably because right now my code is simple enough that I can find part of the code that can be refactored easily.
+
+- Are my tests helping me to drive out a good design? If I have a lot of integration tests but less unit tests, do I need to make more unit tests to get better feedback on my code design?
+
+Yes, by using TDD, I have managed to use my tests to help me make a better implementation of the code. By writing the requirement first in the form of the test, I can easily make the implementation of the requirements. I don't think i have too few unit tests, but i can see the lack of integration tests.
+
+#### Evaluate Your Tests: Productive Workflow
+
+- Are my feedback cycles as fast as I would like them? When do I get warned about bugs, and is there any practical way to make that happen sooner?
+
+The feedback cycles from the tests are currently really fast, i get warned about bugs early, and i don't think there is any practical way i can make it faster than it is.
+
+- Is there some way that I could write faster integration tests that would get me feedback quicker?
+
+yes, the easiest way to make faster integration tests that give feedback quicker, is to set up the minimum database needed for each test, this way the integration test doesn't have to overwork itself unnecessarily
+
+- Can I run a subset of the full test suite when I need to?
+
+yes, currently, i can run a subset of the full test suite when i need to using IntelliJ built-in feature to test individual tests by right-clicking the test name inside the test suite.
+
+- Am I spending too much time waiting for tests to run, and thus less time in a productive flow state?
+
+No, currently, where i'm running these tests, i get back feedback from it very quickly therefore doesn't waste a lot of time not in a productive flow state.
+
+### 2. You have created unit tests in Tutorial. Now reflect whether your tests have successfully followed F.I.R.S.T. principle or not. If not, explain things that you need to do the next time you create more tests.
+
+- Fast: The tests run as fast as possible so it can be run without interrupting your workflow.
+
+yes, currently no unit tests involve slow operation like accessing the database. Therefore, the tests is quite fast
+
+- Isolated/Independent: A test case must not interfere, change the state of functions, or dependent to other test cases.
+
+In the OrderTest suite, each test method creates its own Order objects, which means there's no shared state between tests, effectively isolating each tests.
+
+In the OrderRepositoryTest suite, the setUp method creates a fresh OrderRepository and a new list of Order objects for each test, which makes the tests isn't dependent on the side effects of previous tests, which effectively isolating each tests.
+
+In the OrderServiceImplTest suite, by using Mockito to mock the OrderRepository, i isonlates the OrderService logic and prevents tests from depending on the real repository implementation, which isolate it.
+
+- Repeatable: Tests must be able to run repeatedly, with consistent result.
+
+Yes, the currently implemented tests is very much repeatable with consistent repeated results.
+
+- Self-Validating: Tests must be self-validating (have strict and correct assertions to pass/fail).
+
+Yes, as far as i know, all of my unit tests are using JUnit assertion to self-validate
+
+- Thorough/Timely: Tests must cover all happy paths and unhappy paths. Cover all possibility of results and errors. Tests must be designed before coding.
+
+Yes, my tests did cover all happy paths and unhappy paths that's described in the tutorial section, which cover all possibility of results and errors, which is designed before coding.
