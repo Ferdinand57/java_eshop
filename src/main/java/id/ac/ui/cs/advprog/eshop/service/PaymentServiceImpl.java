@@ -21,26 +21,67 @@ public class PaymentServiceImpl implements PaymentService {
     private OrderRepository orderRepository;
     @Override
     public Payment addPayment(Order order, String method, Map<String, String> paymentData) {
-        return null;
+        String paymentId = UUID.randomUUID().toString();
+        Payment payment = new Payment(paymentId, method, paymentData);
+        processPayment(payment, method, paymentData);
+        paymentRepository.save(payment);
+        return payment;
     }
     private void processPayment(Payment payment, String method, Map<String, String> paymentData) {
-        return;
+        if ("VOUCHER".equals(method)) {
+            String voucherCode = paymentData.get("voucherCode");
+            if (isValidVoucherCode(voucherCode)) {
+                payment.setStatus("SUCCESS");
+            } else {
+                payment.setStatus("REJECTED");
+            }
+        } else if ("BANK_TRANSFER".equals(method)) {
+            String bankName = paymentData.get("bankName");
+            String referenceCode = paymentData.get("referenceCode");
+            if (bankName == null || bankName.isEmpty() || referenceCode == null || referenceCode.isEmpty()) {
+                payment.setStatus("REJECTED");
+            }
+        }
     }
     private boolean isValidVoucherCode(String voucherCode) {
-        return null != voucherCode && !voucherCode.isEmpty();
+        if (voucherCode == null || voucherCode.length() != 16) {
+            return false;
+        }
+        if (!voucherCode.startsWith("ESHOP")) {
+            return false;
+        }
+        int numCount = 0;
+        for (char c : voucherCode.toCharArray()) {
+            if (Character.isDigit(c)) {
+                numCount++;
+            }
+        }
+        return numCount == 8;
     }
     @Override
     public Payment setStatus(Payment payment, String status) {
-        return null;
+        payment.setStatus(status);
+        Order order = orderRepository.findById(payment.getId());
+        if (order == null) {
+            throw new NoSuchElementException("Order not found for payment ID: " + payment.getId());
+        }
+
+        if ("SUCCESS".equals(status)) {
+            order.setStatus("SUCCESS");
+        } else if ("REJECTED".equals(status)) {
+            order.setStatus("FAILED");
+        }
+        orderRepository.save(order);
+        return payment;
     }
 
     @Override
     public Payment getPayment(String paymentId) {
-        return null;
+        return paymentRepository.findById(paymentId);
     }
 
     @Override
     public List<Payment> getAllPayments(){
-        return null;
+        return paymentRepository.findAll();
     }
 }
